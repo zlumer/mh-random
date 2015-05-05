@@ -1,0 +1,18 @@
+.hero-pic {
+	 width: 170px;
+	 /* center text */
+	 text-align: center;
+}
+.hero-pic img {
+	/* center image */
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+}
+
+.hero-pic label input[type=checkbox] {
+	display: none;
+}
+.hero-pic * {
+	 cursor: pointer;
+}
