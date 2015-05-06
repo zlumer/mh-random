@@ -1,14 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-<!-- Bootstrap -->
+<!-- Bootstrap styles -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-
-<link rel="stylesheet" href="css/style.css">
 
 <div class="container">
     <h1>Marvel Heroes random hero box calculator</h1>
@@ -29,6 +23,25 @@
 	</div>
 	<h3>Select heroes you already have in your roster:</h3>
     <div id="roster" class="row">
+		<script id="hero-pic-template" type="text/dot">
+			<div class="col-md-1 hero-pic" data-id="{{=it.id}}">
+				<label>
+					<img src="{{=it.hero.img}}"/>
+					<input type="checkbox"/>
+					<span class="hero-name">{{=it.hero.name}}</span>
+				</label>
+			</div>
+		</script>
     </div>
 </div>
+
+<!-- custom styles -->
+<link rel="stylesheet" href="css/style.css">
+
+<!-- libs -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dot/1.0.3/doT.min.js"></script>
+
+<!-- main app script -->
 <script src="js/script.js"></script>

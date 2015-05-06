@@ -1,23 +1,34 @@
 class Calculator
 {
-	static getOwnedHeroes<T>(heroes:T[], ownedIdxs:boolean[]):T[]
+	ownedIdxs:boolean[] = [];
+	
+	constructor(public heroes:IHero[])
 	{
-	    return heroes.filter((hero, idx) => ownedIdxs[idx]);
 	}
-	static getNewHeroes<T>(heroes:T[], ownedIdxs:boolean[]):T[]
+	
+	setOwned(idx:number, owned:boolean)
 	{
-	    return heroes.filter((hero, idx) => !ownedIdxs[idx]);
+		this.ownedIdxs[idx] = owned;
 	}
-	static sumPrice(heroes:IHero[])
+	
+	get ownedHeroes()
 	{
-	    return heroes.reduce(function(sum, hero){ return sum + (hero.es || 0); }, 0);
+	    return this.heroes.filter((hero, idx) => this.ownedIdxs[idx]);
 	}
-	static chanceToGetNew(ownedCount:number, totalCount:number)
+	get newHeroes()
 	{
-	    return (totalCount - ownedCount) / totalCount;
+	    return this.heroes.filter((hero, idx) => !this.ownedIdxs[idx]);
 	}
-	static chanceToGetOwned(ownedCount:number, totalCount:number)
+	get totalHeroesPrice()
 	{
-	    return ownedCount / totalCount;
+	    return this.heroes.reduce((sum, hero) => { return sum + (hero.es || 0); }, 0);
+	}
+	get chanceToGetNew()
+	{
+	    return (this.heroes.length - this.ownedHeroes.length) / this.heroes.length;
+	}
+	get chanceToGetOwned()
+	{
+	    return this.ownedHeroes.length / this.heroes.length;
 	}
 }

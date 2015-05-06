@@ -20,24 +20,17 @@ Not gonna happen:
 /// <reference path="./all.d.ts" />
 
 var HEROES:IHero[] = HeroesList.HEROES;
-
-__test__();
+var calc = new Calculator(HEROES);
 
 prepareRoster();
 
-printChances([true, false]);
-
 function prepareRoster()
 {
-    var p = '<div class="col-md-1 hero-pic" data-id="{{id}}"><label><img src="{{img}}"/><input type="checkbox"/><span class="hero-name">{{name}}</span></label></div>';
+    var tmpl = doT.template($('script#hero-pic-template').text());
     for (var i = 0; i < HEROES.length; i++)
     {
         var hero = HEROES[i];
-        $('#roster').append(p.replace('{{name}}', hero.name).replace('{{img}}', hero.img).replace('{{id}}', i.toString()));
-        if (!hero.es)
-        {
-            $('#roster').append("<p>" + hero.name + " missing ES price</p>");
-        }
+        $('#roster').append(tmpl({ hero:hero, idx:i }));
     }
 }
 function populateOwned()
@@ -45,29 +38,7 @@ function populateOwned()
     
 }
 
-function printChances(ownedIdxs)
+function printChances()
 {
-    var owned = Calculator.getOwnedHeroes(HEROES, ownedIdxs);
-    
-    var totalPrice = Calculator.sumPrice(HEROES);
-    var ownedPrice = Calculator.sumPrice(owned);
-    
-    $('#result > .duplicate > .value').text('' + (Calculator.chanceToGetOwned(owned.length, HEROES.length) * 100).toFixed(2) + '%');
-}
-function __test__()
-{
-    console.assert(Calculator.chanceToGetOwned(1, 10) == 1/10, "chanceToGetOwned(1, 10)");
-    console.assert(Calculator.chanceToGetOwned(10, 10) == 1, "chanceToGetOwned(10, 10)");
-    console.assert(Calculator.chanceToGetOwned(1, 1) == 1, "chanceToGetOwned(1, 1)");
-    console.assert(Calculator.chanceToGetOwned(1, 2) == 1/2, "chanceToGetOwned(1, 2)");
-    console.assert(Calculator.chanceToGetOwned(0, 1) == 0, "chanceToGetOwned(0, 1)");
-    console.assert(Calculator.chanceToGetOwned(0, 15) == 0, "chanceToGetOwned(0, 15)");
-    
-    console.assert(Calculator.chanceToGetNew(1, 10) == 9/10);
-    console.assert(Calculator.chanceToGetNew(1, 1) == 0);
-    console.assert(Calculator.chanceToGetNew(0, 1) == 1);
-    
-    console.assert(Calculator.getOwnedHeroes([1,2,3], [true, false]).length == 1);
-    
-    console.assert(Calculator.sumPrice(HEROES) == Calculator.sumPrice(Calculator.getNewHeroes(HEROES, [])), "sumPrice = " + Calculator.sumPrice(HEROES) + " / " + Calculator.sumPrice(Calculator.getNewHeroes(HEROES, [])));
+    $('#result > .duplicate > .value').text('' + (calc.chanceToGetOwned * 100).toFixed(2) + '%');
 }

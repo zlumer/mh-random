@@ -1,21 +1,48 @@
 var Calculator = (function () {
-    function Calculator() {
+    function Calculator(heroes) {
+        this.heroes = heroes;
+        this.ownedIdxs = [];
     }
-    Calculator.getOwnedHeroes = function (heroes, ownedIdxs) {
-        return heroes.filter(function (hero, idx) { return ownedIdxs[idx]; });
+    Calculator.prototype.setOwned = function (idx, owned) {
+        this.ownedIdxs[idx] = owned;
     };
-    Calculator.getNewHeroes = function (heroes, ownedIdxs) {
-        return heroes.filter(function (hero, idx) { return !ownedIdxs[idx]; });
-    };
-    Calculator.sumPrice = function (heroes) {
-        return heroes.reduce(function (sum, hero) { return sum + (hero.es || 0); }, 0);
-    };
-    Calculator.chanceToGetNew = function (ownedCount, totalCount) {
-        return (totalCount - ownedCount) / totalCount;
-    };
-    Calculator.chanceToGetOwned = function (ownedCount, totalCount) {
-        return ownedCount / totalCount;
-    };
+    Object.defineProperty(Calculator.prototype, "ownedHeroes", {
+        get: function () {
+            var _this = this;
+            return this.heroes.filter(function (hero, idx) { return _this.ownedIdxs[idx]; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Calculator.prototype, "newHeroes", {
+        get: function () {
+            var _this = this;
+            return this.heroes.filter(function (hero, idx) { return !_this.ownedIdxs[idx]; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Calculator.prototype, "totalHeroesPrice", {
+        get: function () {
+            return this.heroes.reduce(function (sum, hero) { return sum + (hero.es || 0); }, 0);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Calculator.prototype, "chanceToGetNew", {
+        get: function () {
+            return (this.heroes.length - this.ownedHeroes.length) / this.heroes.length;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Calculator.prototype, "chanceToGetOwned", {
+        get: function () {
+            return this.ownedHeroes.length / this.heroes.length;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Calculator;
 })();
 var HeroesList = (function () {
@@ -60,37 +87,17 @@ Not gonna happen:
 */
 /// <reference path="./all.d.ts" />
 var HEROES = HeroesList.HEROES;
-__test__();
+var calc = new Calculator(HEROES);
 prepareRoster();
-printChances([true, false]);
 function prepareRoster() {
-    var p = '<div class="col-md-1 hero-pic" data-id="{{id}}"><label><img src="{{img}}"/><input type="checkbox"/><span class="hero-name">{{name}}</span></label></div>';
+    var tmpl = doT.template($('script#hero-pic-template').text());
     for (var i = 0; i < HEROES.length; i++) {
         var hero = HEROES[i];
-        $('#roster').append(p.replace('{{name}}', hero.name).replace('{{img}}', hero.img).replace('{{id}}', i.toString()));
-        if (!hero.es) {
-            $('#roster').append("<p>" + hero.name + " missing ES price</p>");
-        }
+        $('#roster').append(tmpl({ hero: hero, idx: i }));
     }
 }
 function populateOwned() {
 }
-function printChances(ownedIdxs) {
-    var owned = Calculator.getOwnedHeroes(HEROES, ownedIdxs);
-    var totalPrice = Calculator.sumPrice(HEROES);
-    var ownedPrice = Calculator.sumPrice(owned);
-    $('#result > .duplicate > .value').text('' + (Calculator.chanceToGetOwned(owned.length, HEROES.length) * 100).toFixed(2) + '%');
-}
-function __test__() {
-    console.assert(Calculator.chanceToGetOwned(1, 10) == 1 / 10, "chanceToGetOwned(1, 10)");
-    console.assert(Calculator.chanceToGetOwned(10, 10) == 1, "chanceToGetOwned(10, 10)");
-    console.assert(Calculator.chanceToGetOwned(1, 1) == 1, "chanceToGetOwned(1, 1)");
-    console.assert(Calculator.chanceToGetOwned(1, 2) == 1 / 2, "chanceToGetOwned(1, 2)");
-    console.assert(Calculator.chanceToGetOwned(0, 1) == 0, "chanceToGetOwned(0, 1)");
-    console.assert(Calculator.chanceToGetOwned(0, 15) == 0, "chanceToGetOwned(0, 15)");
-    console.assert(Calculator.chanceToGetNew(1, 10) == 9 / 10);
-    console.assert(Calculator.chanceToGetNew(1, 1) == 0);
-    console.assert(Calculator.chanceToGetNew(0, 1) == 1);
-    console.assert(Calculator.getOwnedHeroes([1, 2, 3], [true, false]).length == 1);
-    console.assert(Calculator.sumPrice(HEROES) == Calculator.sumPrice(Calculator.getNewHeroes(HEROES, [])), "sumPrice = " + Calculator.sumPrice(HEROES) + " / " + Calculator.sumPrice(Calculator.getNewHeroes(HEROES, [])));
+function printChances() {
+    $('#result > .duplicate > .value').text('' + (calc.chanceToGetOwned * 100).toFixed(2) + '%');
 }
