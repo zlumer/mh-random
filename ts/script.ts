@@ -91,10 +91,13 @@ function update()
 	var ret = calc.expectedReturn;
 	var yes = ret > 1.30;
 	var no = ret < 1;
+	var full = ret == 0;
 	// hide if not sure about 'yes'
 	$('.res-answer.res-yes').toggleClass('hide', !yes);
 	// hide if not sure about 'no'
-	$('.res-answer.res-no').toggleClass('hide', !no);
+	$('.res-answer.res-no').toggleClass('hide', !no || full);
+	// 
+	$('.res-answer.res-full').toggleClass('hide', !full);
 	// hide if either 'yes' or 'no' is true
-	$('.res-answer.res-probably').toggleClass('hide', yes || no);
+	$('.res-answer.res-probably').toggleClass('hide', yes || no || full);
 }
