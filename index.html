@@ -19,18 +19,26 @@
 		</script>
     </div>
 	<div id="result" class="collapsed">
-		YES!
+		<p class="bg-success res-answer res-yes">YES! Go get a random box!</p>
 			<!--
-				chance to get a new hero: 50%
 				chance to get a desired hero: 11%
 				
 				<h2 id="suggestion">NO</h2>
 					Go buy Deadpool or Emma instead!
 					
 			 -->
-		<p class="duplicate">Chance to get duplicate:
+		<p class="new-hero">
+			Chance to get a new hero:
+			<strong><span class="value"></span></strong>
+		</p>
+		<p class="duplicate">
+			Chance to get a duplicate hero token:
 			<span class="value"></span>
 		</p>
+	</div>
+	<div id="disclaimer">
+		<p>According to Random Hero Box description, all heroes have equal chances.</p>
+		<p>While the math here is believed to be 100% correct, there is always a lot of luck involved: you can get 3 duplicate tokens in a row with 99% chance of new, or get an only missing hero with 2% chance of rolling.</p>
 	</div>
 	<div id="footer">
 		<p class="text-muted">

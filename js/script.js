@@ -82,10 +82,8 @@ var HeroesList = (function () {
 })();
 /*
 TODO:
-1. Calculate on every click
 2. Add 'wanted' checkbox
 3. Add 'ultimate wanted' checkbox
-4. Add statements: 'all heroes have equal chances', 'random is random, don't rely on the numbers', etc.
 5. Save selection in local storage on every click
 6. Add 'clear all' button
 7. Add link anchors to save selections (and update anchor on every click) - it's not that hard, just base64 current selection
@@ -95,7 +93,9 @@ TODO:
 Not gonna happen:
 3. Show & edit hero list JSON (github fork/pull request instead)
 
-- add checkbox 'I don't mind getting duplicate of this hero (ult token)'
+DONE:
+1. Calculate on every click
+4. Add statements: 'all heroes have equal chances', 'random is random, don't rely on the numbers', etc.
 
 */
 /// <reference path="./all.d.ts" />
@@ -121,6 +121,10 @@ function prepareRoster() {
         update();
     });
 }
+function percent(val, decimalDigits) {
+    if (decimalDigits === void 0) { decimalDigits = 2; }
+    return '' + (val * 100).toFixed(decimalDigits) + '%';
+}
 function update() {
     // mark selected heroes
     $('.hero-pic').each(function (idx, elem) {
@@ -131,5 +135,6 @@ function update() {
     $('#clear-button').toggleClass('hide', !calc.hasAnyOwnedHeroes);
     // hide result panel if no heroes are selected
     $('#result').toggleClass('collapsed', !calc.hasAnyOwnedHeroes);
-    $('#result > .duplicate > .value').text('' + (calc.chanceToGetOwned * 100).toFixed(2) + '%');
+    $('#result .duplicate .value').text(percent(calc.chanceToGetOwned));
+    $('#result .new-hero .value').text(percent(calc.chanceToGetNew));
 }
