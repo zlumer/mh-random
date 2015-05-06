@@ -1,7 +1,7 @@
 .hero-pic {
-	 width: 170px;
-	 /* center text */
-	 text-align: center;
+	width: 170px;
+	/* center text */
+	text-align: center;
 }
 .hero-pic img {
 	/* center image */
@@ -14,5 +14,8 @@
 	display: none;
 }
 .hero-pic * {
-	 cursor: pointer;
+	cursor: pointer;
+}
+.hero-pic.selected {
+	background: blue;
 }
