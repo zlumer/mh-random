@@ -51,6 +51,8 @@ var Calculator = (function () {
     });
     Object.defineProperty(Calculator.prototype, "expectedReturn", {
         get: function () {
+            if (!this.newHeroes.length)
+                return 0;
             return this.totalNewHeroesPrice / this.newHeroes.length * this.chanceToGetNew / Calculator.BOX_COST;
         },
         enumerable: true,

@@ -45,6 +45,9 @@ class Calculator
 	}
 	get expectedReturn()
 	{
+		if (!this.newHeroes.length)
+			return 0;
+		
 		return this.totalNewHeroesPrice / this.newHeroes.length * this.chanceToGetNew / Calculator.BOX_COST;
 	}
 	get chanceToGetNew()
