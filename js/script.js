@@ -1,6 +1,6 @@
 var Calculator = (function () {
-    function Calculator(heroes) {
-        this.heroes = heroes;
+    function Calculator(_heroes) {
+        this._heroes = _heroes;
         this.clearOwned();
     }
     Calculator.prototype.setOwned = function (idx, owned) {
@@ -10,7 +10,7 @@ var Calculator = (function () {
         return !!this.ownedIdxs[idx];
     };
     Calculator.prototype.clearOwned = function () {
-        this.ownedIdxs = this.heroes.map(function () { return false; });
+        this.ownedIdxs = this._heroes.map(function () { return false; });
     };
     Object.defineProperty(Calculator.prototype, "hasAnyOwnedHeroes", {
         get: function () {
@@ -22,7 +22,7 @@ var Calculator = (function () {
     Object.defineProperty(Calculator.prototype, "ownedHeroes", {
         get: function () {
             var _this = this;
-            return this.heroes.filter(function (hero, idx) { return _this.ownedIdxs[idx]; });
+            return this._heroes.filter(function (hero, idx) { return _this.ownedIdxs[idx]; });
         },
         enumerable: true,
         configurable: true
@@ -30,32 +30,47 @@ var Calculator = (function () {
     Object.defineProperty(Calculator.prototype, "newHeroes", {
         get: function () {
             var _this = this;
-            return this.heroes.filter(function (hero, idx) { return !_this.ownedIdxs[idx]; });
+            return this._heroes.filter(function (hero, idx) { return !_this.ownedIdxs[idx]; });
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Calculator.prototype, "totalHeroesPrice", {
         get: function () {
-            return this.heroes.reduce(function (sum, hero) { return sum + (hero.es || 0); }, 0);
+            return this._heroes.reduce(function (sum, hero) { return sum + (hero.es || 0); }, 0);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Calculator.prototype, "totalNewHeroesPrice", {
+        get: function () {
+            return this.newHeroes.reduce(function (sum, hero) { return sum + (hero.es || 0); }, 0);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Calculator.prototype, "expectedReturn", {
+        get: function () {
+            return this.totalNewHeroesPrice / this.newHeroes.length * this.chanceToGetNew / Calculator.BOX_COST;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Calculator.prototype, "chanceToGetNew", {
         get: function () {
-            return (this.heroes.length - this.ownedHeroes.length) / this.heroes.length;
+            return (this._heroes.length - this.ownedHeroes.length) / this._heroes.length;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Calculator.prototype, "chanceToGetOwned", {
         get: function () {
-            return this.ownedHeroes.length / this.heroes.length;
+            return this.ownedHeroes.length / this._heroes.length;
         },
         enumerable: true,
         configurable: true
     });
+    Calculator.BOX_COST = 175;
     return Calculator;
 })();
 var HeroesList = (function () {
@@ -91,12 +106,6 @@ TODO:
 Not gonna happen:
 3. Show & edit hero list JSON (github fork/pull request instead)
 
-DONE:
-1. Calculate on every click
-4. Add statements: 'all heroes have equal chances', 'random is random, don't rely on the numbers', etc.
-5. Save selection in local storage on every click
-6. Add 'clear all' button
-
 */
 /// <reference path="./all.d.ts" />
 var HEROES = HeroesList.HEROES;
@@ -113,7 +122,7 @@ function init() {
     $('input.invisible-friend').change(function (ev) {
         var cb = ev.currentTarget;
         var idx = parseInt(cb.getAttribute('data-id'));
-        calc.setOwned(idx, cb.checked);
+        calc.setOwned(idx, !calc.isOwned(idx));
         update();
     });
     $('#clear-button').click(function (event) {
@@ -153,4 +162,14 @@ function update() {
     $('#result').toggleClass('collapsed', !calc.hasAnyOwnedHeroes);
     $('#result .duplicate .value').text(percent(calc.chanceToGetOwned));
     $('#result .new-hero .value').text(percent(calc.chanceToGetNew));
+    $('#result .expected-return .value').text(percent(calc.expectedReturn));
+    var ret = calc.expectedReturn;
+    var yes = ret > 1.30;
+    var no = ret < 1;
+    // hide if not sure about 'yes'
+    $('.res-answer.res-yes').toggleClass('hide', !yes);
+    // hide if not sure about 'no'
+    $('.res-answer.res-no').toggleClass('hide', !no);
+    // hide if either 'yes' or 'no' is true
+    $('.res-answer.res-probably').toggleClass('hide', yes || no);
 }

@@ -9,12 +9,6 @@ TODO:
 Not gonna happen:
 3. Show & edit hero list JSON (github fork/pull request instead)
 
-DONE:
-1. Calculate on every click
-4. Add statements: 'all heroes have equal chances', 'random is random, don't rely on the numbers', etc.
-5. Save selection in local storage on every click
-6. Add 'clear all' button
-
 */
 
 /// <reference path="./all.d.ts" />
@@ -39,7 +33,7 @@ function init()
 		var cb = <HTMLInputElement>ev.currentTarget;
 		var idx = parseInt(cb.getAttribute('data-id'));
 
-		calc.setOwned(idx, cb.checked);
+		calc.setOwned(idx, !calc.isOwned(idx));
 		update();
 	});
 	$('#clear-button').click((event)=>
@@ -78,7 +72,7 @@ function update()
 	saveStorage();
 	
 	// mark selected heroes
-	$('.hero-pic').each((idx, elem)=>
+	$('.hero-pic').each((idx, elem) =>
 	{
 		var dataId = parseInt(elem.getAttribute('data-id'));
 		$(elem).children('label').toggleClass('bg-primary', calc.isOwned(dataId));
@@ -90,7 +84,17 @@ function update()
 	// hide result panel if no heroes are selected
 	$('#result').toggleClass('collapsed', !calc.hasAnyOwnedHeroes);
 	
-	
     $('#result .duplicate .value').text(percent(calc.chanceToGetOwned));
 	$('#result .new-hero .value').text(percent(calc.chanceToGetNew));
+	$('#result .expected-return .value').text(percent(calc.expectedReturn));
+	
+	var ret = calc.expectedReturn;
+	var yes = ret > 1.30;
+	var no = ret < 1;
+	// hide if not sure about 'yes'
+	$('.res-answer.res-yes').toggleClass('hide', !yes);
+	// hide if not sure about 'no'
+	$('.res-answer.res-no').toggleClass('hide', !no);
+	// hide if either 'yes' or 'no' is true
+	$('.res-answer.res-probably').toggleClass('hide', yes || no);
 }

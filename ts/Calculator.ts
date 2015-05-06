@@ -1,8 +1,10 @@
 class Calculator
 {
+	static BOX_COST = 175;
+	
 	ownedIdxs:boolean[];
 	
-	constructor(public heroes:IHero[])
+	constructor(private _heroes:IHero[])
 	{
 		this.clearOwned();
 	}
@@ -17,7 +19,7 @@ class Calculator
 	}
 	clearOwned()
 	{
-		this.ownedIdxs = this.heroes.map(() => false);
+		this.ownedIdxs = this._heroes.map(() => false);
 	}
 	
 	get hasAnyOwnedHeroes()
@@ -27,22 +29,30 @@ class Calculator
 	
 	get ownedHeroes()
 	{
-	    return this.heroes.filter((hero, idx) => this.ownedIdxs[idx]);
+	    return this._heroes.filter((hero, idx) => this.ownedIdxs[idx]);
 	}
 	get newHeroes()
 	{
-	    return this.heroes.filter((hero, idx) => !this.ownedIdxs[idx]);
+	    return this._heroes.filter((hero, idx) => !this.ownedIdxs[idx]);
 	}
 	get totalHeroesPrice()
 	{
-	    return this.heroes.reduce((sum, hero) => { return sum + (hero.es || 0); }, 0);
+	    return this._heroes.reduce((sum, hero) => { return sum + (hero.es || 0); }, 0);
+	}
+	get totalNewHeroesPrice()
+	{
+	    return this.newHeroes.reduce((sum, hero) => { return sum + (hero.es || 0); }, 0);
+	}
+	get expectedReturn()
+	{
+		return this.totalNewHeroesPrice / this.newHeroes.length * this.chanceToGetNew / Calculator.BOX_COST;
 	}
 	get chanceToGetNew()
 	{
-	    return (this.heroes.length - this.ownedHeroes.length) / this.heroes.length;
+	    return (this._heroes.length - this.ownedHeroes.length) / this._heroes.length;
 	}
 	get chanceToGetOwned()
 	{
-	    return this.ownedHeroes.length / this.heroes.length;
+	    return this.ownedHeroes.length / this._heroes.length;
 	}
 }
