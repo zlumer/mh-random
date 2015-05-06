@@ -6,6 +6,19 @@ var Calculator = (function () {
     Calculator.prototype.setOwned = function (idx, owned) {
         this.ownedIdxs[idx] = owned;
     };
+    Calculator.prototype.isOwned = function (idx) {
+        return !!this.ownedIdxs[idx];
+    };
+    Calculator.prototype.clearOwned = function () {
+        this.ownedIdxs = [];
+    };
+    Object.defineProperty(Calculator.prototype, "hasAnyOwnedHeroes", {
+        get: function () {
+            return !!this.ownedHeroes.length;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Calculator.prototype, "ownedHeroes", {
         get: function () {
             var _this = this;
@@ -89,6 +102,7 @@ Not gonna happen:
 var HEROES = HeroesList.HEROES;
 var calc = new Calculator(HEROES);
 prepareRoster();
+update();
 function prepareRoster() {
     var tmpl = doT.template($('script#hero-pic-template').text());
     for (var i = 0; i < HEROES.length; i++) {
@@ -98,19 +112,24 @@ function prepareRoster() {
     $('input.invisible-friend').change(function (ev) {
         var cb = ev.currentTarget;
         var idx = parseInt(cb.getAttribute('data-id'));
-        update(idx, cb.checked);
+        calc.setOwned(idx, cb.checked);
+        update();
+    });
+    $('#clear-button').click(function (event) {
+        event.preventDefault();
+        calc.clearOwned();
+        update();
     });
 }
-function update(idx, owned) {
-    calc.setOwned(idx, owned);
-    printChances();
-}
-function populateOwned() {
-}
-function printChances() {
-    if (calc.ownedHeroes.length)
-        $('#result').removeClass('hide');
-    else
-        $('#result').addClass('hide');
+function update() {
+    // mark selected heroes
+    $('.hero-pic').each(function (idx, elem) {
+        var dataId = parseInt(elem.getAttribute('data-id'));
+        $(elem).children('label').toggleClass('bg-primary', calc.isOwned(dataId));
+    });
+    // hide 'clear all' button if no heroes are selected
+    $('#clear-button').toggleClass('hide', !calc.hasAnyOwnedHeroes);
+    // hide result panel if no heroes are selected
+    $('#result').toggleClass('collapsed', !calc.hasAnyOwnedHeroes);
     $('#result > .duplicate > .value').text('' + (calc.chanceToGetOwned * 100).toFixed(2) + '%');
 }

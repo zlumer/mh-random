@@ -10,6 +10,19 @@ class Calculator
 	{
 		this.ownedIdxs[idx] = owned;
 	}
+	isOwned(idx:number):boolean
+	{
+		return !!this.ownedIdxs[idx];
+	}
+	clearOwned()
+	{
+		this.ownedIdxs = [];
+	}
+	
+	get hasAnyOwnedHeroes()
+	{
+		return !!this.ownedHeroes.length;
+	}
 	
 	get ownedHeroes()
 	{

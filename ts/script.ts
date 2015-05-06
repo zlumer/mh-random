@@ -23,6 +23,7 @@ var HEROES:IHero[] = HeroesList.HEROES;
 var calc = new Calculator(HEROES);
 
 prepareRoster();
+update();
 
 function prepareRoster()
 {
@@ -36,26 +37,32 @@ function prepareRoster()
 	{
 		var cb = <HTMLInputElement>ev.currentTarget;
 		var idx = parseInt(cb.getAttribute('data-id'));
-		update(idx, cb.checked);
+
+		calc.setOwned(idx, cb.checked);
+		update();
+	});
+	$('#clear-button').click((event)=>
+	{
+		event.preventDefault();
+		
+		calc.clearOwned();
+		update();
 	});
 }
-function update(idx:number, owned:boolean)
+function update()
 {
-	calc.setOwned(idx, owned);
+	// mark selected heroes
+	$('.hero-pic').each((idx, elem)=>
+	{
+		var dataId = parseInt(elem.getAttribute('data-id'));
+		$(elem).children('label').toggleClass('bg-primary', calc.isOwned(dataId));
+	})
 	
-	printChances();
-}
-function populateOwned()
-{
-    
-}
-
-function printChances()
-{
-	if (calc.ownedHeroes.length)
-		$('#result').removeClass('hide');
-	else
-		$('#result').addClass('hide');
+	// hide 'clear all' button if no heroes are selected
+	$('#clear-button').toggleClass('hide', !calc.hasAnyOwnedHeroes);
+	
+	// hide result panel if no heroes are selected
+	$('#result').toggleClass('collapsed', !calc.hasAnyOwnedHeroes);
 	
     $('#result > .duplicate > .value').text('' + (calc.chanceToGetOwned * 100).toFixed(2) + '%');
 }

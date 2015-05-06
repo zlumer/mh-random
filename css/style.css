@@ -11,13 +11,30 @@
 	max-width: 140px;
 	max-height: 40px;
 }
-
-input[type=checkbox].invisible-friend {
-	display: none;
+.hero-pic label {
+	width:140px;
 }
 .hero-pic * {
 	cursor: pointer;
 }
-.hero-pic.selected {
-	background: blue;
+input[type=checkbox].invisible-friend {
+	display: none;
+}
+
+div#footer {
+	margin-top: 40px;
+}
+div#result {
+	max-height: 40px;
+	transition-property: all;
+	transition-duration: 1s;
+	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+div#result.collapsed {
+	overflow-y: hidden;
+	max-height: 0;
+	color: rgba(0, 0, 0, 0);
+	transition-property: all;
+	transition-duration: .5s;
+	transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
 }

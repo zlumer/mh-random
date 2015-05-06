@@ -6,8 +6,20 @@
 
 <div class="container">
     <h2>Marvel Heroes random hero box calculator <small>Should you random? Calculate your chances.</small></h2>
-	<div id="result" class="hide">
-		<h2 id="suggestion">YES!</h2>
+	<p class="lead">Select heroes you already have in your roster: <a id="clear-button" href="#clear-all">(clear all)</a></p>
+    <div id="roster" class="row">
+		<script id="hero-pic-template" type="text/dot">
+			<div class="col-md-1 hero-pic" data-id="{{=it.id}}">
+				<label>
+					<img src="{{=it.hero.img}}"/>
+					<input class="invisible-friend" type="checkbox" data-id="{{=it.id}}" />
+					<span class="hero-name">{{=it.hero.name}}</span>
+				</label>
+			</div>
+		</script>
+    </div>
+	<div id="result" class="collapsed">
+		YES!
 			<!--
 				chance to get a new hero: 50%
 				chance to get a desired hero: 11%
@@ -20,18 +32,13 @@
 			<span class="value"></span>
 		</p>
 	</div>
-	<p class="lead">Select heroes you already have in your roster:</p>
-    <div id="roster" class="row">
-		<script id="hero-pic-template" type="text/dot">
-			<div class="col-md-1 hero-pic" data-id="{{=it.id}}">
-				<label>
-					<img src="{{=it.hero.img}}"/>
-					<input class="invisible-friend" type="checkbox" data-id="{{=it.id}}" />
-					<span class="hero-name">{{=it.hero.name}}</span>
-				</label>
-			</div>
-		</script>
-    </div>
+	<div id="footer">
+		<p class="text-muted">
+			Marvel Heroes patch v1.49.
+			Developed by <a href="https://github.com/zlumer/">zlumer</a>. 
+			Source code <a href="https://github.com/zlumer/mh-random">available</a> on GitHub
+		</p>
+	</div>
 </div>
 
 <!-- custom styles -->
