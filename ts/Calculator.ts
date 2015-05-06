@@ -1,9 +1,10 @@
 class Calculator
 {
-	ownedIdxs:boolean[] = [];
+	ownedIdxs:boolean[];
 	
 	constructor(public heroes:IHero[])
 	{
+		this.clearOwned();
 	}
 	
 	setOwned(idx:number, owned:boolean)
@@ -16,7 +17,7 @@ class Calculator
 	}
 	clearOwned()
 	{
-		this.ownedIdxs = [];
+		this.ownedIdxs = this.heroes.map(() => false);
 	}
 	
 	get hasAnyOwnedHeroes()

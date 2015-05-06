@@ -1,7 +1,7 @@
 var Calculator = (function () {
     function Calculator(heroes) {
         this.heroes = heroes;
-        this.ownedIdxs = [];
+        this.clearOwned();
     }
     Calculator.prototype.setOwned = function (idx, owned) {
         this.ownedIdxs[idx] = owned;
@@ -10,7 +10,7 @@ var Calculator = (function () {
         return !!this.ownedIdxs[idx];
     };
     Calculator.prototype.clearOwned = function () {
-        this.ownedIdxs = [];
+        this.ownedIdxs = this.heroes.map(function () { return false; });
     };
     Object.defineProperty(Calculator.prototype, "hasAnyOwnedHeroes", {
         get: function () {
@@ -84,8 +84,6 @@ var HeroesList = (function () {
 TODO:
 2. Add 'wanted' checkbox
 3. Add 'ultimate wanted' checkbox
-5. Save selection in local storage on every click
-6. Add 'clear all' button
 7. Add link anchors to save selections (and update anchor on every click) - it's not that hard, just base64 current selection
 8. Add meta keywords for SEO
 
@@ -96,14 +94,17 @@ Not gonna happen:
 DONE:
 1. Calculate on every click
 4. Add statements: 'all heroes have equal chances', 'random is random, don't rely on the numbers', etc.
+5. Save selection in local storage on every click
+6. Add 'clear all' button
 
 */
 /// <reference path="./all.d.ts" />
 var HEROES = HeroesList.HEROES;
 var calc = new Calculator(HEROES);
-prepareRoster();
+loadStorage();
+init();
 update();
-function prepareRoster() {
+function init() {
     var tmpl = doT.template($('script#hero-pic-template').text());
     for (var i = 0; i < HEROES.length; i++) {
         var hero = HEROES[i];
@@ -121,11 +122,26 @@ function prepareRoster() {
         update();
     });
 }
+function loadStorage() {
+    if (!Modernizr.localstorage)
+        return;
+    var storage = localStorage.getItem('selected');
+    if (!storage || (storage.charAt(0) != '['))
+        storage = '[]';
+    var selected = JSON.parse(storage);
+    selected.forEach(function (val, idx) { return calc.setOwned(idx, val); });
+}
+function saveStorage() {
+    if (!Modernizr.localstorage)
+        return;
+    localStorage.setItem('selected', JSON.stringify(calc.ownedIdxs));
+}
 function percent(val, decimalDigits) {
     if (decimalDigits === void 0) { decimalDigits = 2; }
     return '' + (val * 100).toFixed(decimalDigits) + '%';
 }
 function update() {
+    saveStorage();
     // mark selected heroes
     $('.hero-pic').each(function (idx, elem) {
         var dataId = parseInt(elem.getAttribute('data-id'));
