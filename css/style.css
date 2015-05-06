@@ -8,9 +8,11 @@
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
+	max-width: 140px;
+	max-height: 40px;
 }
 
-.hero-pic label input[type=checkbox] {
+input[type=checkbox].invisible-friend {
 	display: none;
 }
 .hero-pic * {

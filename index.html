@@ -5,9 +5,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 
 <div class="container">
-    <h1>Marvel Heroes random hero box calculator</h1>
-	<h3>Should you random? Calculate your chances.</h3>
-	<div id="result">
+    <h2>Marvel Heroes random hero box calculator <small>Should you random? Calculate your chances.</small></h2>
+	<div id="result" class="hide">
 		<h2 id="suggestion">YES!</h2>
 			<!--
 				chance to get a new hero: 50%
@@ -21,13 +20,13 @@
 			<span class="value"></span>
 		</p>
 	</div>
-	<h3>Select heroes you already have in your roster:</h3>
+	<p class="lead">Select heroes you already have in your roster:</p>
     <div id="roster" class="row">
 		<script id="hero-pic-template" type="text/dot">
 			<div class="col-md-1 hero-pic" data-id="{{=it.id}}">
 				<label>
 					<img src="{{=it.hero.img}}"/>
-					<input type="checkbox"/>
+					<input class="invisible-friend" type="checkbox" data-id="{{=it.id}}" />
 					<span class="hero-name">{{=it.hero.name}}</span>
 				</label>
 			</div>

@@ -30,8 +30,20 @@ function prepareRoster()
     for (var i = 0; i < HEROES.length; i++)
     {
         var hero = HEROES[i];
-        $('#roster').append(tmpl({ hero:hero, idx:i }));
+        $('#roster').append(tmpl({ hero:hero, id:i }));
     }
+	$('input.invisible-friend').change((ev)=> 
+	{
+		var cb = <HTMLInputElement>ev.currentTarget;
+		var idx = parseInt(cb.getAttribute('data-id'));
+		update(idx, cb.checked);
+	});
+}
+function update(idx:number, owned:boolean)
+{
+	calc.setOwned(idx, owned);
+	
+	printChances();
 }
 function populateOwned()
 {
@@ -40,5 +52,10 @@ function populateOwned()
 
 function printChances()
 {
+	if (calc.ownedHeroes.length)
+		$('#result').removeClass('hide');
+	else
+		$('#result').addClass('hide');
+	
     $('#result > .duplicate > .value').text('' + (calc.chanceToGetOwned * 100).toFixed(2) + '%');
 }
